@@ -1,7 +1,8 @@
-package com.example.toolnotifier
+package com.example.toolnotifier.businessLogic
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import com.example.toolnotifier.Log
 import java.io.IOException
 
 fun Context.readTextFile(filename: String): String? {
@@ -10,8 +11,7 @@ fun Context.readTextFile(filename: String): String? {
             ?.firstOrNull {
                 it.canRead() && it.isFile && (it.name == filename || it.name == "$filename.txt")
             }
-            ?.readBytes()
-            ?.toString()
+            ?.readText()
     } catch (e: IOException) {
         Log.e(e)
         null

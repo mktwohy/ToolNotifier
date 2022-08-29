@@ -3,25 +3,20 @@ package com.example.toolnotifier
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.toolnotifier.extensions.viewModel
 import com.example.toolnotifier.ui.theme.ToolNotifierTheme
 
 
 class MainActivity : ComponentActivity() {
-    val viewModel by lazy { viewModel<MainActivityViewModel>() }
+    private val viewModel by lazy { viewModel<MainActivityViewModel>() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,31 +27,36 @@ class MainActivity : ComponentActivity() {
                 Surface(color = MaterialTheme.colors.background) {
                     Column(
                         modifier = Modifier.fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
                     ) {
-                        Button(onClick = viewModel::checkForUpdate) {
-                            Text(text = "Manually Check for Update")
+                        Button(
+                            onClick = viewModel::checkForUpdate,
+                            enabled = !viewModel.isUpdating
+                        ) {
+                            Text(text = "Manually Check for New Tools")
                         }
-                        Text(viewModel.lastUpdatedDateText)
-                        Text(viewModel.didWebsiteUpdateText)
+
+                        Box(
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .height(30.dp)
+                                .fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            if (viewModel.isUpdating) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(25.dp),
+                                    strokeWidth = 3.dp
+                                )
+                            } else {
+                                Text(text = viewModel.lastUpdatedDateText,)
+                            }
+                        }
+
                     }
                 }
             }
         }
-    }
-
-
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    ToolNotifierTheme {
-        Greeting("Android")
     }
 }

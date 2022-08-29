@@ -1,4 +1,4 @@
-package com.example.toolnotifier
+package com.example.toolnotifier.businessLogic
 
 enum class CellProvider(smsEmailDomain: String) {
     AT_T("@txt.att.net"),
