@@ -71,4 +71,8 @@ dependencies {
 
     // WorkManager with Coroutines
     implementation "androidx.work:work-runtime-ktx:2.7.1"
+
+    // Android Mail
+    implementation 'com.sun.mail:android-mail:1.6.0'
+    implementation 'com.sun.mail:android-activation:1.6.0'
 }

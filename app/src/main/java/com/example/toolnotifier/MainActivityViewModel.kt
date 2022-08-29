@@ -7,9 +7,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.toolnotifier.Constants.LAST_UPDATED_FILENAME
-import com.example.toolnotifier.businessLogic.getDateFromWebsite
-import com.example.toolnotifier.businessLogic.readTextFile
-import com.example.toolnotifier.businessLogic.writeTextFile
+import com.example.toolnotifier.businessLogic.*
+import com.example.toolnotifier.businessLogic.notifying.EmailRecipient
+import com.example.toolnotifier.businessLogic.notifying.SmsRecipient
+import com.example.toolnotifier.businessLogic.notifying.sendSms
 import kotlinx.coroutines.launch
 
 class MainActivityViewModel : ViewModel() {
@@ -30,7 +31,7 @@ class MainActivityViewModel : ViewModel() {
             isUpdating = true
 
             val fileDate = getDateFromFile()
-            val websiteDate = getDateFromWebsite()
+            val websiteDate = getDateFromWebsite(testingMode = true)
 
             this@MainActivityViewModel.lastUpdatedDate = websiteDate ?: fileDate
 
@@ -53,8 +54,14 @@ class MainActivityViewModel : ViewModel() {
         }
     }
 
-    private fun onWebsiteUpdated() {
-        Log.i("Website Updated With New Tools!", showToast = true)
+    private suspend fun onWebsiteUpdated() {
+        Log.i("Website updated with new tools!", showToast = true)
+
+        sendSms(
+            recipients = listOf(SmsRecipient.Michael, EmailRecipient.Michael),
+            subject = "HyperKitten Updates",
+            message = "There are new tools available on HyperKitten! \nhttps://www.hyperkitten.com/store/index.php"
+        )
     }
 
     private fun getDateFromFile(): String? =
