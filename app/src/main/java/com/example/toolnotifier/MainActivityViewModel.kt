@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.toolnotifier.Constants.LAST_UPDATED_FILENAME
+import com.example.toolnotifier.Constants.MAILING_LIST
 import com.example.toolnotifier.businessLogic.*
 import com.example.toolnotifier.businessLogic.notifying.EmailRecipient
 import com.example.toolnotifier.businessLogic.notifying.SmsRecipient
@@ -58,7 +59,7 @@ class MainActivityViewModel : ViewModel() {
         Log.i("Website updated with new tools!", showToast = true)
 
         sendSms(
-            recipients = listOf(SmsRecipient.Michael, EmailRecipient.Michael),
+            recipients = MAILING_LIST,
             subject = "HyperKitten Updates",
             message = "There are new tools available on HyperKitten! \nhttps://www.hyperkitten.com/store/index.php"
         )
