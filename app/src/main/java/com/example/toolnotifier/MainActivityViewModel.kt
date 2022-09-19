@@ -6,72 +6,38 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.toolnotifier.Constants.LAST_UPDATED_FILENAME
-import com.example.toolnotifier.Constants.MAILING_LIST
 import com.example.toolnotifier.businessLogic.*
-import com.example.toolnotifier.businessLogic.notifying.EmailRecipient
-import com.example.toolnotifier.businessLogic.notifying.SmsRecipient
-import com.example.toolnotifier.businessLogic.notifying.sendSms
+import com.example.toolnotifier.util.Log
 import kotlinx.coroutines.launch
 
 class MainActivityViewModel : ViewModel() {
     var isUpdating: Boolean by mutableStateOf(false)
 
-    private var lastUpdatedDate: String? by mutableStateOf(null)
+    private var _websiteUpdatedDate: String by mutableStateOf("")
+    private var _lastCheckedDate: String by mutableStateOf("")
 
-    val lastUpdatedDateText by derivedStateOf {
-        "Tools added on: ${lastUpdatedDate ?: "unknown"}"
-    }
+    val websiteUpdatedDate by derivedStateOf { "Tools Added: $_websiteUpdatedDate" }
+    val lastCheckedDate by derivedStateOf { "Last Checked: $_lastCheckedDate" }
 
     init {
-        lastUpdatedDate = ContextHolder.context.readTextFile(LAST_UPDATED_FILENAME)
+        loadDatesFromFiles()
+        LocalFiles.registerOnWriteListener { success ->
+            loadDatesFromFiles()
+            if (!success) Log.e("Write Failed", showToast = true, sendDebugEmail = true)
+        }
     }
 
-    fun checkForUpdate() {
+    fun manuallyCheckForUpdate() {
         viewModelScope.launch {
             isUpdating = true
-
-            val fileDate = getDateFromFile()
-            val websiteDate = getDateFromWebsite(testingMode = true)
-
-            this@MainActivityViewModel.lastUpdatedDate = websiteDate ?: fileDate
-
-            if (websiteDate == null) {
-                Log.e("Unable to get date from website", showToast = true)
-                isUpdating = false
-                return@launch
-            }
-            if (fileDate == null) {
-                Log.i("File does not exist. Initializing file...", showToast = true)
-            }
-
-            writeDateToFile(websiteDate)
-
-            if (fileDate != websiteDate) {
-                onWebsiteUpdated()
-            }
-
+            checkForNewTools(manualCheck = true)
+            loadDatesFromFiles()
             isUpdating = false
         }
     }
 
-    private suspend fun onWebsiteUpdated() {
-        Log.i("Website updated with new tools!", showToast = true)
-
-        sendSms(
-            recipients = MAILING_LIST,
-            subject = "HyperKitten Updates",
-            message = "There are new tools available on HyperKitten! \nhttps://www.hyperkitten.com/store/index.php"
-        )
+    private fun loadDatesFromFiles() {
+        _websiteUpdatedDate = LocalFiles.toolsUpdatedDate.read()
+        _lastCheckedDate = LocalFiles.lastCheckedDate.read()
     }
-
-    private fun getDateFromFile(): String? =
-        ContextHolder.context.readTextFile(LAST_UPDATED_FILENAME)
-
-    private fun writeDateToFile(date: String): Boolean =
-        ContextHolder.context
-            .writeTextFile(LAST_UPDATED_FILENAME, date)
-            .also { writeSuccessful ->
-                if (!writeSuccessful) Log.e("Unable to write file")
-            }
 }

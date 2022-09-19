@@ -6,15 +6,18 @@ sealed class Recipient {
 
 data class EmailRecipient(
     val username: String,
-    val domain: String
+    val domain: EmailDomain
 ) : Recipient() {
-    override val emailAddress = "$username@$domain"
+    override val emailAddress = "$username@${domain.domain}"
 
     companion object {
-        val Michael = EmailRecipient(
-            username = "mktwohy",
-            domain = "gmail.com"
-        )
+        val Michael = "mktwohy".gmail_com
+        val MichaelDev = "mktwohy.dev".gmail_com
+        val Matt = "mhtwohy".gmail_com
+
+        private val String.gmail_com: EmailRecipient
+            get() = EmailRecipient(this, EmailDomain.GMAIL)
+
     }
 }
 
@@ -22,22 +25,16 @@ data class SmsRecipient(
     val number: Long,
     val cellProvider: CellProvider
 ) : Recipient() {
-    override val emailAddress = "$number${cellProvider.smsEmailDomain}"
+    override val emailAddress = "$number@${cellProvider.smsEmailDomain}"
 
     companion object {
         val Michael = SmsRecipient(
             number = 651_219_9246,
             cellProvider = CellProvider.T_MOBILE
         )
+        val Matt = SmsRecipient(
+            number = 651_497_4149,
+            cellProvider = CellProvider.AT_T
+        )
     }
-}
-
-enum class CellProvider(val smsEmailDomain: String) {
-    AT_T("@txt.att.net"),
-    BOOST("@sms.myboostmobile.com"),
-    CRICKET("@mms.cricketwireless.net"),
-    GOOGLE_FI("@msg.fi.google.com"),
-    SPRINT("@messaging.sprintpcs.com"),
-    T_MOBILE("@tmomail.net"),
-    VERIZON("@vtext.com")
 }

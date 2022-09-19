@@ -1,4 +1,4 @@
-package com.example.toolnotifier
+package com.example.toolnotifier.util
 
 import android.content.Context
 
@@ -9,7 +9,7 @@ object ContextHolder {
         get() = _appContext
 
     fun init(context: Context) {
-        if (!::_appContext.isInitialized) {
+        if (!ContextHolder::_appContext.isInitialized) {
             synchronized(this) {
                 _appContext = context.applicationContext
             }

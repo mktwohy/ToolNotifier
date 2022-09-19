@@ -4,17 +4,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 private val emailSender = GmailSmtpServer(
-    user = "mktwohy.dev@gmail.com",
+    user = EmailRecipient.MichaelDev.emailAddress,
     password = "ygpjbnyjodcdqwfl"
 )
 
-suspend fun sendEmail(recipients: List<String>, subject: String?, message: String) {
+suspend fun sendEmail(recipients: List<Recipient>, subject: String?, message: String) {
     withContext(Dispatchers.IO) {
         emailSender.sendMail(
             subject = subject,
             body = message,
-            sender = "ADifferentSender",
-            recipients = recipients
+            sender = "mktwohy.dev@gmail.com",
+            recipients = recipients.map { it.emailAddress }
         )
     }
 }

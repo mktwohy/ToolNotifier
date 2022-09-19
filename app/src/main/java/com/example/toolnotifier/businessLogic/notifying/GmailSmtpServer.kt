@@ -1,6 +1,6 @@
 package com.example.toolnotifier.businessLogic.notifying
 
-import com.example.toolnotifier.Log
+import com.example.toolnotifier.util.Log
 import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.InputStream
