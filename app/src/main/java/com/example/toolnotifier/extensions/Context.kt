@@ -2,11 +2,14 @@ package com.example.toolnotifier.extensions
 
 import android.content.Context
 import android.widget.Toast
+import androidx.datastore.dataStore
 import androidx.work.WorkManager
+import com.example.toolnotifier.businessLogic.AppSettingsSerializer
 import com.example.toolnotifier.util.ContextHolder
 import com.example.toolnotifier.util.Log
 import java.io.IOException
 
+val Context.dataStore by dataStore("AppSettings.json", AppSettingsSerializer)
 
 val Context.WorkManagerInstance: WorkManager
     get() = WorkManager.getInstance(this)

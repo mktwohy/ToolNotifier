@@ -1,17 +1,19 @@
 package com.example.toolnotifier
 
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
+import androidx.datastore.dataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.toolnotifier.businessLogic.*
+import com.example.toolnotifier.extensions.dataStore
+import com.example.toolnotifier.util.ContextHolder
 import com.example.toolnotifier.util.Log
 import kotlinx.coroutines.launch
 
 class MainActivityViewModel : ViewModel() {
     var isUpdating: Boolean by mutableStateOf(false)
+    var isWorkManagerEnabled: Boolean by mutableStateOf(false)
+        private set
 
     private var _websiteUpdatedDate: String by mutableStateOf("")
     private var _lastCheckedDate: String by mutableStateOf("")
